@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Nail Services Booking</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('http://localhost:3000/form-data')
+                .then(response => response.json())
+                .then(data => {
+                    populateForm(data);
+                }) 
+                .catch(error => console.error('Error:', error));
+        });
+
+        function populateForm(data) {
+            const serviceSelect = document.getElementById('service');
+            const timeSelect = document.getElementById('time');
+
+            data.services.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service.toLowerCase().replace(' ', '-');
+                option.textContent = service;
+                serviceSelect.appendChild(option);
+            });
+
+            data.availableTimes.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                timeSelect.appendChild(option);
+            });
+        }
+
+        function submitBooking() {
+            const form = document.getElementById('bookingForm');
+            const formData = new FormData(form);
+
+            // Convert FormData to JSON object
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            fetch('http://localhost:3000/book-service', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Book Nail Services</h1>
+    <form id="bookingForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="service">Service:</label>
+        <select id="service" name="service" required>
+            <option value="">Select a service</option>
+        </select><br><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+
+        <label for="time">Time:</label>
+        <select id="time" name="time" required>
+            <option value="">Select a time</option>
+        </select><br><br>
+
+        <button type="button" onclick="submitBooking()">Book Now</button>
+    </form>
+</body>
+</html>

@@ -10,7 +10,7 @@ import { db } from "./db.js"
  * @param {object} payload Data need to be inserted
  * @param {string} successMessage message will be send if success
  * @returns {object} ReturnObject
- */
+ */ 
 export const create = async (table, payload, successMessage) => {
     let result = {}
     const q = getInsertQuery(table, payload, true)
